@@ -6,6 +6,7 @@ import { ArrowRight, Microscope, Heart, Brain, Shield } from 'lucide-react';
 import Button from '@/components/ui/Button';
 import Card from '@/components/ui/Card';
 import SectionLayout from '@/components/layout/SectionLayout';
+import { HeroGeometric } from '@/components/ui/shape-landing-hero';
 
 export default function HomePage() {
   const features = [
@@ -41,40 +42,13 @@ export default function HomePage() {
   return (
     <div className='min-h-screen'>
       {/* Hero Section */}
-      <SectionLayout background='gradient' padding='xl' className='pt-32'>
-        <div className='text-center max-w-4xl mx-auto'>
-          <motion.h1
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, ease: 'easeOut' }}
-            className='text-4xl md:text-6xl font-bold text-gray-900 mb-6'>
-            推动医疗科技创新
-            <span className='block text-gradient mt-2'>构建智慧医疗未来</span>
-          </motion.h1>
-
-          <motion.p
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.2, ease: 'easeOut' }}
-            className='text-xl text-gray-600 mb-8 leading-relaxed'>
-            汇聚国内外顶尖高校/医院的医学AI科研人员，构建高质量专业团队， 致力于推动医疗科技创新发展，为人类健康事业贡献力量。
-          </motion.p>
-
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.4, ease: 'easeOut' }}
-            className='flex flex-col sm:flex-row gap-4 justify-center'>
-            <Button variant='primary' size='lg' className='group'>
-              了解更多
-              <ArrowRight className='w-5 h-5 group-hover:translate-x-1 transition-transform' />
-            </Button>
-            <Button variant='outline' size='lg'>
-              联系我们
-            </Button>
-          </motion.div>
-        </div>
-      </SectionLayout>
+      <HeroGeometric
+        badge='医疗科技创新'
+        title1='推动医疗科技创新'
+        title2='构建智慧医疗未来'
+        description='汇聚国内外顶尖高校/医院的医学AI科研人员，构建高质量专业团队，致力于推动医疗科技创新发展，为人类健康事业贡献力量。'
+        showButtons={true}
+      />
 
       {/* Features Section */}
       <SectionLayout background='white' padding='xl'>

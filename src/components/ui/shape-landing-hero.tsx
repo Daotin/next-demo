@@ -147,7 +147,7 @@ function HeroGeometric({
       </div>
 
       <div className='relative z-10 container mx-auto px-4 md:px-6'>
-        <div className='max-w-3xl mx-auto text-center'>
+        <div className='max-w-5xl mx-auto text-center'>
           <motion.div
             custom={0}
             variants={fadeUpVariants}
@@ -162,7 +162,7 @@ function HeroGeometric({
             <h1 className='text-4xl sm:text-6xl md:text-8xl font-bold mb-6 md:mb-8 tracking-tight'>
               <span className='bg-clip-text text-transparent bg-gradient-to-b from-white to-white/80'>{title1}</span>
               <br />
-              <span className={cn('bg-clip-text text-transparent bg-gradient-to-r from-indigo-300 via-white/90 to-rose-300 ')}>
+              <span className={cn('bg-clip-text text-transparent bg-gradient-to-r from-indigo-300 via-white/90 to-rose-300 mt-2 block')}>
                 {title2}
               </span>
             </h1>

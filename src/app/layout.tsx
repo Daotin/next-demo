@@ -7,25 +7,38 @@ import Footer from '@/components/layout/Footer';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: '医疗科技有限公司 - 推动医疗科技创新发展',
+  title: 'CalculusBrain - 脑健康AI全栈解决方案与创新转化平台',
   description:
-    '汇聚国内外顶尖高校/医院的医学AI科研人员，构建高质量专业团队，致力于推动医疗科技创新发展。提供学术指导、项目合作、成果转化、数据分析等专业服务。',
-  keywords: '医疗科技,人工智能,精准医疗,数据分析,学术指导,项目合作',
-  authors: [{ name: '医疗科技团队' }],
+    '专注于脑健康AI的开源学习型组织，汇聚医学AI领域顶尖人才，致力于推动脑健康人工智能应用与创新转化。提供大模型+知识图谱、多模态AI、算法研发、产品转化等全栈技术服务。',
+  keywords: '脑健康AI,人工智能,大模型,知识图谱,多模态AI,医学影像,脑机接口,帕金森,阿尔茨海默症,自闭症,CalculusBrain',
+  authors: [{ name: 'CalculusBrain Team' }],
   viewport: 'width=device-width, initial-scale=1',
   robots: 'index, follow',
+  icons: {
+    icon: '/logo.webp',
+    apple: '/logo.webp',
+  },
   openGraph: {
     type: 'website',
     locale: 'zh_CN',
-    url: 'https://medtech.com',
-    title: '医疗科技有限公司 - 推动医疗科技创新发展',
-    description: '汇聚国内外顶尖高校/医院的医学AI科研人员，致力于推动医疗科技创新发展',
-    siteName: '医疗科技',
+    url: 'https://calculusbrain.ai',
+    title: 'CalculusBrain - 脑健康AI全栈解决方案与创新转化平台',
+    description: '专注于脑健康AI的开源学习型组织，致力于推动脑健康人工智能应用与创新转化，构建从算法研发到产品落地的完整AI技术栈',
+    siteName: 'CalculusBrain',
+    images: [
+      {
+        url: '/logo.webp',
+        width: 1200,
+        height: 630,
+        alt: 'CalculusBrain - 脑健康AI全栈解决方案',
+      },
+    ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: '医疗科技有限公司 - 推动医疗科技创新发展',
-    description: '汇聚国内外顶尖高校/医院的医学AI科研人员，致力于推动医疗科技创新发展',
+    title: 'CalculusBrain - 脑健康AI全栈解决方案',
+    description: '专注脑健康AI创新，大模型+知识图谱技术，推动医学人工智能产业化',
+    images: ['/logo.webp'],
   },
 };
 

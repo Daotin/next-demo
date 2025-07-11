@@ -2,55 +2,78 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
-import { ArrowRight, Microscope, Heart, Brain, Shield } from 'lucide-react';
+import { ArrowRight, Brain, Network, Cpu, Shield, Database, BookOpen, Award, Microscope } from 'lucide-react';
 import Button from '@/components/ui/Button';
 import Card from '@/components/ui/Card';
 import SectionLayout from '@/components/layout/SectionLayout';
 import { HeroGeometric } from '@/components/ui/shape-landing-hero';
 
 export default function HomePage() {
-  const features = [
-    {
-      icon: Microscope,
-      title: '精准医疗',
-      description: '基于基因组学、蛋白质组学等多组学数据，为患者提供个性化精准医疗解决方案',
-    },
+  const coreCapabilities = [
     {
       icon: Brain,
-      title: 'AI智能诊断',
-      description: '运用深度学习算法，辅助医生进行疾病诊断，提高诊断准确性和效率',
+      title: '脑健康AI大模型',
+      description: '构建帕金森、阿尔茨海默症、自闭症、脑肿瘤等疾病专用大模型与知识图谱，提供精准智能诊断',
     },
     {
-      icon: Heart,
-      title: '智慧健康',
-      description: '通过物联网设备和大数据分析，实现健康监测、预警和管理的智能化',
+      icon: Network,
+      title: '多模态AI融合',
+      description: '整合影像、生理信号、临床数据等多源信息，实现跨模态智能分析与决策支持',
+    },
+    {
+      icon: Cpu,
+      title: '全栈算法平台',
+      description: '涵盖机器学习、深度学习、大语言模型的完整AI技术栈，支持端到端产品化开发',
     },
     {
       icon: Shield,
-      title: '数据安全',
-      description: '采用领先的加密技术和隐私保护机制，确保医疗数据的安全性和私密性',
+      title: '监管合规认证',
+      description: '具备NMPA、FDA、CE等国际医疗器械认证能力，确保产品合规上市',
     },
   ];
 
-  const services = [
-    { name: '学术指导', count: '200+', description: '项目指导经验' },
-    { name: '技术咨询', count: '150+', description: '企业合作案例' },
-    { name: '数据分析', count: '300+', description: '数据处理项目' },
-    { name: '成果转化', count: '50+', description: '转化成功案例' },
+  const platformAdvantages = [
+    { name: '知识产权', count: '50+', description: 'PCT国际专利布局' },
+    { name: '学术成果', count: '100+', description: 'SCI 2区以上论文' },
+    { name: '产品转化', count: '20+', description: '医疗AI产品落地' },
+    { name: '数据处理', count: '10PB+', description: '多模态医疗数据' },
+  ];
+
+  const technicalFeatures = [
+    {
+      icon: Database,
+      title: '数据智能处理',
+      description: '从EEG、影像、病理到基因组学数据的标准化处理与质控体系',
+    },
+    {
+      icon: BookOpen,
+      title: '算法创新研发',
+      description: '前沿算法研究与开源贡献，推动AI+脑健康技术发展',
+    },
+    {
+      icon: Award,
+      title: '产业化转化',
+      description: '完整的产品化流程，从科研成果到临床应用的无缝转化',
+    },
+    {
+      icon: Microscope,
+      title: '科研合作',
+      description: '与985/211高校及三甲医院深度合作，共建医学AI生态',
+    },
   ];
 
   return (
     <div className='min-h-screen'>
       {/* Hero Section */}
       <HeroGeometric
-        badge='医疗科技创新'
-        title1='推动医疗科技创新'
-        title2='构建智慧医疗未来'
-        description='汇聚国内外顶尖高校/医院的医学AI科研人员，构建高质量专业团队，致力于推动医疗科技创新发展，为人类健康事业贡献力量。'
+        badge='脑健康AI创新平台'
+        title1='构建脑健康AI全栈解决方案'
+        title2='引领医学人工智能产业化'
+        description='CalculusBrain专注于脑健康领域的人工智能应用与创新转化，通过大模型+知识图谱技术，为医疗机构提供从算法研发到产品落地的全栈AI解决方案。'
         showButtons={true}
       />
 
-      {/* Features Section */}
+      {/* Core Capabilities Section */}
       <SectionLayout background='white' padding='xl'>
         <div className='text-center mb-16'>
           <motion.h2
@@ -59,7 +82,7 @@ export default function HomePage() {
             viewport={{ once: true }}
             transition={{ duration: 0.8, ease: 'easeOut' }}
             className='text-3xl md:text-4xl font-bold text-gray-900 mb-4'>
-            核心技术优势
+            核心技术能力
           </motion.h2>
           <motion.p
             initial={{ opacity: 0, y: 30 }}
@@ -67,12 +90,78 @@ export default function HomePage() {
             viewport={{ once: true }}
             transition={{ duration: 0.8, delay: 0.2, ease: 'easeOut' }}
             className='text-lg text-gray-600 max-w-2xl mx-auto'>
-            结合前沿科技与临床实践，为医疗行业提供创新解决方案
+            基于深度学习与大模型技术，构建覆盖数据层到应用层的完整AI技术栈
           </motion.p>
         </div>
 
         <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8'>
-          {features.map((feature, index) => (
+          {coreCapabilities.map((capability, index) => (
+            <Card key={capability.title} delay={index * 0.1} className='text-center group'>
+              <div className='service-icon mx-auto mb-4'>
+                <capability.icon size={24} />
+              </div>
+              <h3 className='text-xl font-semibold text-gray-900 mb-3'>{capability.title}</h3>
+              <p className='text-gray-600 leading-relaxed'>{capability.description}</p>
+            </Card>
+          ))}
+        </div>
+      </SectionLayout>
+
+      {/* Platform Advantages Section */}
+      <SectionLayout background='gray' padding='xl'>
+        <div className='text-center mb-16'>
+          <motion.h2
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, ease: 'easeOut' }}
+            className='text-3xl md:text-4xl font-bold text-gray-900 mb-4'>
+            平台优势
+          </motion.h2>
+          <motion.p
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, delay: 0.2, ease: 'easeOut' }}
+            className='text-lg text-gray-600 max-w-2xl mx-auto'>
+            深厚的技术积累与丰富的产业化经验，为脑健康AI创新提供坚实保障
+          </motion.p>
+        </div>
+
+        <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8'>
+          {platformAdvantages.map((advantage, index) => (
+            <Card key={advantage.name} delay={index * 0.1} className='stats-card'>
+              <div className='stats-number'>{advantage.count}</div>
+              <h3 className='text-xl font-semibold text-gray-900 mb-2'>{advantage.name}</h3>
+              <p className='stats-label'>{advantage.description}</p>
+            </Card>
+          ))}
+        </div>
+      </SectionLayout>
+
+      {/* Technical Features Section */}
+      <SectionLayout background='white' padding='xl'>
+        <div className='text-center mb-16'>
+          <motion.h2
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, ease: 'easeOut' }}
+            className='text-3xl md:text-4xl font-bold text-gray-900 mb-4'>
+            技术服务体系
+          </motion.h2>
+          <motion.p
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, delay: 0.2, ease: 'easeOut' }}
+            className='text-lg text-gray-600 max-w-2xl mx-auto'>
+            为医疗机构、科研院所、医疗器械企业提供端到端的AI技术服务
+          </motion.p>
+        </div>
+
+        <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8'>
+          {technicalFeatures.map((feature, index) => (
             <Card key={feature.title} delay={index * 0.1} className='text-center group'>
               <div className='service-icon mx-auto mb-4'>
                 <feature.icon size={24} />
@@ -84,40 +173,8 @@ export default function HomePage() {
         </div>
       </SectionLayout>
 
-      {/* Services Stats Section */}
-      <SectionLayout background='gray' padding='xl'>
-        <div className='text-center mb-16'>
-          <motion.h2
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8, ease: 'easeOut' }}
-            className='text-3xl md:text-4xl font-bold text-gray-900 mb-4'>
-            专业服务领域
-          </motion.h2>
-          <motion.p
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8, delay: 0.2, ease: 'easeOut' }}
-            className='text-lg text-gray-600 max-w-2xl mx-auto'>
-            凭借丰富的实战经验和专业技能，为客户提供全方位的医疗科技服务
-          </motion.p>
-        </div>
-
-        <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8'>
-          {services.map((service, index) => (
-            <Card key={service.name} delay={index * 0.1} className='stats-card'>
-              <div className='stats-number'>{service.count}</div>
-              <h3 className='text-xl font-semibold text-gray-900 mb-2'>{service.name}</h3>
-              <p className='stats-label'>{service.description}</p>
-            </Card>
-          ))}
-        </div>
-      </SectionLayout>
-
       {/* CTA Section */}
-      <SectionLayout background='white' padding='xl'>
+      <SectionLayout background='gray' padding='xl'>
         <div className='max-w-4xl mx-auto text-center'>
           <motion.h2
             initial={{ opacity: 0, y: 30 }}
@@ -125,7 +182,7 @@ export default function HomePage() {
             viewport={{ once: true }}
             transition={{ duration: 0.8, ease: 'easeOut' }}
             className='text-3xl md:text-4xl font-bold text-gray-900 mb-6'>
-            准备开始您的医疗科技项目？
+            携手构建脑健康AI未来
           </motion.h2>
           <motion.p
             initial={{ opacity: 0, y: 30 }}
@@ -133,7 +190,7 @@ export default function HomePage() {
             viewport={{ once: true }}
             transition={{ duration: 0.8, delay: 0.2, ease: 'easeOut' }}
             className='text-lg text-gray-600 mb-8 leading-relaxed'>
-            我们的专业团队随时为您提供咨询服务，帮助您实现医疗科技创新的目标。 立即联系我们，开启合作之旅。
+            无论您是医疗机构寻求AI升级，科研院所探索技术创新，还是企业谋求产品转化，CalculusBrain都能为您提供专业的脑健康AI解决方案。让我们一起推动医学人工智能的产业化进程。
           </motion.p>
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -142,10 +199,10 @@ export default function HomePage() {
             transition={{ duration: 0.8, delay: 0.4, ease: 'easeOut' }}
             className='flex flex-col sm:flex-row gap-4 justify-center'>
             <Button variant='primary' size='lg'>
-              免费咨询
+              技术咨询
             </Button>
             <Button variant='outline' size='lg'>
-              查看案例
+              产品演示
             </Button>
           </motion.div>
         </div>

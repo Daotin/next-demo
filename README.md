@@ -1,36 +1,68 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# CalculusBrain - 脑健康 AI 全栈解决方案与创新转化平台
 
-## Getting Started
+专注于脑健康 AI 的开源学习型组织，汇聚医学 AI 领域顶尖人才，致力于推动脑健康人工智能应用与创新转化。
 
-First, run the development server:
+## 🎯 项目特色
+
+- **脑健康 AI 大模型**: 构建帕金森、阿尔茨海默症、自闭症等疾病专用大模型与知识图谱
+- **多模态 AI 融合**: 整合影像、生理信号、临床数据等多源信息
+- **全栈算法平台**: 涵盖机器学习、深度学习、大语言模型的完整 AI 技术栈
+- **监管合规认证**: 具备 NMPA、FDA、CE 等国际医疗器械认证能力
+
+## 🏗️ 技术栈
+
+- **前端**: Next.js 15, React, TypeScript, Tailwind CSS
+- **动画**: Framer Motion
+- **图标**: Lucide React
+- **字体**: Inter
+
+## 🚀 开发指南
+
+### 安装依赖
+
+```bash
+npm install
+```
+
+### 启动开发服务器
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 构建生产版本
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+npm run build
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 📱 响应式设计
 
-## Learn More
+- **桌面端**: 完整导航和功能
+- **平板端**: 适配布局调整
+- **移动端**: 汉堡菜单导航
 
-To learn more about Next.js, take a look at the following resources:
+## 🌐 SEO 优化
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- **元数据**: 完整的 SEO 标签配置
+- **关键词**: 脑健康 AI、大模型、知识图谱等专业术语
+- **结构化数据**: Open Graph 和 Twitter 卡片支持
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## ♿ 可访问性 (WCAG 2.1 AA)
 
-## Deploy on Vercel
+- **键盘导航**: 完整的键盘操作支持
+- **屏幕阅读器**: 详细的 aria-label 和语义标记
+- **颜色对比**: 符合 WCAG 对比度要求
+- **焦点管理**: 清晰的焦点指示器
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 📄 许可证
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+MIT License - 详见 [LICENSE](LICENSE) 文件
+
+## 🤝 贡献
+
+欢迎贡献代码！请查看我们的贡献指南。
+
+---
+
+© 2024 CalculusBrain Team. 致力于医学 AI 创新与转化.

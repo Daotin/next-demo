@@ -2,21 +2,22 @@
 
 import React from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { Mail, Phone, MapPin, Github, Linkedin, Twitter } from 'lucide-react';
 
 const Footer: React.FC = () => {
   const quickLinks = [
     { name: '关于我们', href: '/about' },
     { name: '团队介绍', href: '/team' },
-    { name: '服务项目', href: '/services' },
-    { name: '案例展示', href: '/cases' },
+    { name: '技术方案', href: '/solutions' },
+    { name: '产品案例', href: '/cases' },
   ];
 
   const services = [
-    { name: '学术指导', href: '/services#academic' },
-    { name: '项目合作', href: '/services#cooperation' },
-    { name: '成果转化', href: '/services#transformation' },
-    { name: '数据分析', href: '/services#analysis' },
+    { name: '算法研发', href: '/services#algorithm' },
+    { name: '产品转化', href: '/services#transformation' },
+    { name: '平台构建', href: '/services#platform' },
+    { name: '技术咨询', href: '/services#consulting' },
   ];
 
   const socialLinks = [
@@ -32,13 +33,13 @@ const Footer: React.FC = () => {
           {/* 公司信息 */}
           <div className='space-y-4'>
             <div className='flex items-center space-x-3'>
-              <div className='w-10 h-10 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg flex items-center justify-center'>
-                <span className='text-white font-bold text-xl'>M</span>
+              <div className='w-10 h-10 relative'>
+                <Image src='/next-demo/logo.png' alt='CalculusBrain Logo' width={100} height={100} className='rounded-lg object-contain' />
               </div>
-              <span className='text-xl font-bold'>医疗科技</span>
+              <span className='text-xl font-bold'>CalculusBrain</span>
             </div>
             <p className='text-gray-400 leading-relaxed'>
-              汇聚国内外顶尖高校/医院的医学AI科研人员，构建高质量专业团队，致力于推动医疗科技创新发展。
+              专注于脑健康AI的开源学习型组织，汇聚医学AI领域顶尖人才，致力于推动脑健康人工智能应用与创新转化。
             </p>
             <div className='flex space-x-4'>
               {socialLinks.map((social) => (
@@ -66,9 +67,9 @@ const Footer: React.FC = () => {
             </ul>
           </div>
 
-          {/* 服务项目 */}
+          {/* 核心服务 */}
           <div>
-            <h3 className='text-lg font-semibold mb-4'>服务项目</h3>
+            <h3 className='text-lg font-semibold mb-4'>核心服务</h3>
             <ul className='space-y-2'>
               {services.map((service) => (
                 <li key={service.name}>
@@ -86,15 +87,15 @@ const Footer: React.FC = () => {
             <div className='space-y-3'>
               <div className='flex items-center space-x-3'>
                 <Mail size={18} className='text-blue-400' />
-                <span className='text-gray-400'>contact@medtech.com</span>
+                <span className='text-gray-400'>team@calculusbrain.ai</span>
               </div>
               <div className='flex items-center space-x-3'>
                 <Phone size={18} className='text-blue-400' />
-                <span className='text-gray-400'>+86 400-123-4567</span>
+                <span className='text-gray-400'>+86 400-AI-BRAIN</span>
               </div>
               <div className='flex items-center space-x-3'>
                 <MapPin size={18} className='text-blue-400' />
-                <span className='text-gray-400'>北京市海淀区科技园</span>
+                <span className='text-gray-400'>全球开源协作网络</span>
               </div>
             </div>
           </div>
@@ -103,13 +104,13 @@ const Footer: React.FC = () => {
         {/* 版权信息 */}
         <div className='border-t border-gray-800 mt-12 pt-8'>
           <div className='flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0'>
-            <p className='text-gray-400 text-sm'>© 2024 医疗科技有限公司. 保留所有权利.</p>
+            <p className='text-gray-400 text-sm'>© 2024 CalculusBrain Team. 致力于医学AI创新与转化.</p>
             <div className='flex space-x-6 text-sm'>
               <Link href='/privacy' className='text-gray-400 hover:text-white transition-colors'>
                 隐私政策
               </Link>
               <Link href='/terms' className='text-gray-400 hover:text-white transition-colors'>
-                服务条款
+                开源协议
               </Link>
               <Link href='/sitemap' className='text-gray-400 hover:text-white transition-colors'>
                 网站地图

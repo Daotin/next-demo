@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X } from 'lucide-react';
 import Button from '../ui/Button';
@@ -13,21 +14,28 @@ const Header: React.FC = () => {
     { name: '首页', href: '/' },
     { name: '团队介绍', href: '/team' },
     // { name: 'Hero演示', href: '/hero-demo' },
-    // { name: '服务项目', href: '/services' },
-    // { name: '案例展示', href: '/cases' },
-    // { name: '联系我们', href: '/contact' },
+    // { name: '技术方案', href: '/solutions' },
+    // { name: '产品案例', href: '/cases' },
+    // { name: '合作咨询', href: '/contact' },
   ];
 
   return (
-    <header className='fixed top-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-md border-b border-gray-200'>
+    <header className='fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-200'>
       <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8'>
         <div className='flex items-center justify-between h-16 md:h-20'>
           {/* Logo */}
           <Link href='/' className='flex items-center space-x-3'>
-            <div className='w-10 h-10 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg flex items-center justify-center'>
-              <span className='text-white font-bold text-xl'>M</span>
+            <div className='w-10 h-10 relative'>
+              <Image
+                src='/next-demo/logo.png'
+                alt='CalculusBrain Logo'
+                width={100}
+                height={100}
+                className='rounded-lg object-contain'
+                priority
+              />
             </div>
-            <span className='text-xl font-bold text-gray-900'>医疗科技</span>
+            <span className='text-xl font-bold text-gray-900'>CalculusBrain</span>
           </Link>
 
           {/* Desktop Navigation */}
@@ -45,7 +53,7 @@ const Header: React.FC = () => {
           {/* CTA Button - Desktop */}
           <div className='hidden md:block'>
             <Button variant='primary' size='sm'>
-              预约咨询
+              技术咨询
             </Button>
           </div>
 
@@ -84,7 +92,7 @@ const Header: React.FC = () => {
                   transition={{ delay: navItems.length * 0.1 }}
                   className='px-4 pt-4'>
                   <Button variant='primary' size='sm' className='w-full'>
-                    预约咨询
+                    技术咨询
                   </Button>
                 </motion.div>
               </nav>

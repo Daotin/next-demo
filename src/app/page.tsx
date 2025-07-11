@@ -67,8 +67,8 @@ export default function HomePage() {
       {/* Hero Section */}
       <HeroGeometric
         badge='脑健康AI创新平台'
-        title1='构建脑健康AI全栈解决方案'
-        title2='引领医学人工智能产业化'
+        title1='脑健康AI全栈解决方案'
+        title2='引领医学AI产业化'
         description='CalculusBrain专注于脑健康领域的人工智能应用与创新转化，通过大模型+知识图谱技术，为医疗机构提供从算法研发到产品落地的全栈AI解决方案。'
         showButtons={true}
       />

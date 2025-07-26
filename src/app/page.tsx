@@ -66,9 +66,9 @@ export default function HomePage() {
     <div className='min-h-screen'>
       {/* Hero Section */}
       <HeroGeometric
-        badge='脑健康AI创新平台'
+        badge='脑健康人工智能应用与转化平台'
         title1='脑健康AI全栈解决方案'
-        title2='引领医学AI产业化'
+        title2='引领医学AI转化'
         description='CalculusBrain专注于脑健康领域的人工智能应用与创新转化，通过大模型+知识图谱技术，为医疗机构提供从算法研发到产品落地的全栈AI解决方案。'
         showButtons={true}
       />
@@ -108,7 +108,7 @@ export default function HomePage() {
       </SectionLayout>
 
       {/* Platform Advantages Section */}
-      <SectionLayout background='gray' padding='xl'>
+      {/* <SectionLayout background='gray' padding='xl'>
         <div className='text-center mb-16'>
           <motion.h2
             initial={{ opacity: 0, y: 30 }}
@@ -137,7 +137,7 @@ export default function HomePage() {
             </Card>
           ))}
         </div>
-      </SectionLayout>
+      </SectionLayout> */}
 
       {/* Technical Features Section */}
       <SectionLayout background='white' padding='xl'>

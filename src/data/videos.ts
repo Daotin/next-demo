@@ -1,0 +1,128 @@
+import { Video } from "@/types/video";
+
+export const videos: Video[] = [
+  {
+    id: "1",
+    title: "医学AI技能提升班·第一期｜医学影像分割新框架",
+    description: "本次课程由团队代码组成员【z同学】讲授。",
+    instructor: "z同学",
+    instructorTitle: "团队代码组成员",
+    duration: "03:06:18",
+    views: 576,
+    publishDate: "2025-07-20",
+    category: "免费技能提升班",
+    type: "B站课程",
+    thumbnail: "/next-demo/video-thumbnails/medical-ai-segmentation.jpg",
+    url: "https://www.bilibili.com/video/example1",
+  },
+  {
+    id: "2",
+    title: "医学AI技能提升班·第一期｜分割医学图像中的任何物体",
+    description: "本次课程由团队影像组成员【徐同学】讲授。",
+    instructor: "徐同学",
+    instructorTitle: "团队影像组成员",
+    duration: "02:55:19",
+    views: 954,
+    publishDate: "2025-07-20",
+    category: "免费技能提升班",
+    type: "B站课程",
+    thumbnail: "/next-demo/video-thumbnails/medical-image-segmentation.jpg",
+    url: "https://www.bilibili.com/video/example2",
+  },
+  {
+    id: "3",
+    title: "医学AI技能提升班·第一期｜Ruipath赋能医学AI模型",
+    description: "本次课程由团队联合创始人【袁博】讲授。",
+    instructor: "袁博",
+    instructorTitle: "团队联合创始人",
+    duration: "02:54:53",
+    views: 1054,
+    publishDate: "2025-07-19",
+    category: "免费技能提升班",
+    type: "B站课程",
+    thumbnail: "/next-demo/video-thumbnails/ruipath-medical-ai.jpg",
+    url: "https://www.bilibili.com/video/example3",
+  },
+  {
+    id: "4",
+    title: "医学AI技能提升班·第一期｜面向癌症研究者的人工智能指南",
+    description: "本次课程由团队联合创始人【罗小罗同学】讲授。",
+    instructor: "罗小罗同学",
+    instructorTitle: "团队联合创始人",
+    duration: "02:57:50",
+    views: 1026,
+    publishDate: "2025-07-19",
+    category: "免费技能提升班",
+    type: "B站课程",
+    thumbnail: "/next-demo/video-thumbnails/cancer-ai-guide.jpg",
+    url: "https://www.bilibili.com/video/example4",
+  },
+  {
+    id: "5",
+    title:
+      "医学AI前沿论坛·第6期｜目前主流的医学AI基础模型有哪些？我们应该如何在有限的数据下构建高性能的基础模型？",
+    description: "本次论坛由来自复旦大学的魏博（团队病理组第二负责人）主讲。",
+    instructor: "魏博",
+    instructorTitle: "病理组负责人",
+    duration: "01:01:49",
+    views: 926,
+    publishDate: "2025-07-13",
+    category: "免费公开课",
+    type: "B站课程",
+    thumbnail: "/next-demo/video-thumbnails/medical-ai-foundation-models.jpg",
+    url: "https://www.bilibili.com/video/example5",
+  },
+  {
+    id: "6",
+    title:
+      "医学AI前沿论坛·第5期｜医学多模态/多组学大模型搭建全流程解析：从数据准备到部署优化",
+    description: "本次论坛由来自同济大学的赵博（团队代码组成员）主讲。",
+    instructor: "赵博",
+    instructorTitle: "代码组",
+    duration: "01:21:24",
+    views: 1043,
+    publishDate: "2025-07-06",
+    category: "免费公开课",
+    type: "B站课程",
+    thumbnail: "/next-demo/video-thumbnails/multimodal-ai-models.jpg",
+    url: "https://www.bilibili.com/video/example6",
+  },
+  {
+    id: "7",
+    title:
+      "医学AI前沿论坛·第4期｜广东省人民医院刘再毅团队整合深度学习CT分类器与病理标志物开展多中心研究，助力结直肠癌精准诊疗",
+    description: "本次论坛由来自东南大学的夏博（团队影像组第二负责人）主讲。",
+    instructor: "夏博",
+    instructorTitle: "影像组负责人",
+    duration: "01:43:02",
+    views: 2043,
+    publishDate: "2025-06-21",
+    category: "免费公开课",
+    type: "B站课程",
+    thumbnail: "/next-demo/video-thumbnails/colorectal-cancer-ai.jpg",
+    url: "https://www.bilibili.com/video/example7",
+  },
+];
+
+export const categories = [
+  { id: "all", name: "全部", count: videos.length },
+  {
+    id: "skill-training",
+    name: "免费技能提升班",
+    count: videos.filter((v) => v.category === "免费技能提升班").length,
+  },
+  {
+    id: "open-course",
+    name: "免费公开课",
+    count: videos.filter((v) => v.category === "免费公开课").length,
+  },
+  {
+    id: "tutorial",
+    name: "免费教程分享",
+    count: videos.filter((v) => v.category === "免费教程分享").length,
+  },
+];
+
+export const instructors = Array.from(
+  new Set(videos.map((v) => v.instructor))
+).sort();

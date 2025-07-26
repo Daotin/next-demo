@@ -12,6 +12,7 @@ const Header: React.FC = () => {
 
   const navItems = [
     { name: '首页', href: '/' },
+    { name: '学习中心', href: '/learning' },
     { name: '团队介绍', href: '/team' },
     // { name: 'Hero演示', href: '/hero-demo' },
     // { name: '技术方案', href: '/solutions' },

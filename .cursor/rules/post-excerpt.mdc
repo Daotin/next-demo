@@ -1,0 +1,313 @@
+# 文章摘要(post.excerpt)规范
+
+## 摘要生成规则
+
+### 1. 摘要长度标准
+
+- **最优长度**: 120-160 字符
+- **最大长度**: 200 字符
+- **最小长度**: 80 字符
+
+### 2. 内容提取规则
+
+```typescript
+interface PostExcerpt {
+  content: string;
+  length: number;
+  truncated: boolean;
+}
+
+// ✅ 正确：智能摘要提取
+function generateExcerpt(
+  content: string,
+  maxLength: number = 160
+): PostExcerpt {
+  // 移除HTML标签和Markdown语法
+  const cleanContent = content
+    .replace(/<[^>]*>/g, "") // 移除HTML标签
+    .replace(/[#*`_~]/g, "") // 移除Markdown符号
+    .replace(/\s+/g, " ") // 规范化空白字符
+    .trim();
+
+  if (cleanContent.length <= maxLength) {
+    return {
+      content: cleanContent,
+      length: cleanContent.length,
+      truncated: false,
+    };
+  }
+
+  // 在句号、问号、感叹号处截断
+  const sentences = cleanContent.split(/[.!?。！？]/);
+  let excerpt = "";
+  let truncated = true;
+
+  for (const sentence of sentences) {
+    const testExcerpt = excerpt + sentence.trim();
+    if (testExcerpt.length > maxLength) {
+      break;
+    }
+    excerpt = testExcerpt + "。";
+    if (excerpt.length >= maxLength * 0.8) {
+      // 达到80%长度即可
+      truncated = false;
+      break;
+    }
+  }
+
+  // 如果没有合适的句子结尾，按单词截断
+  if (excerpt.length < maxLength * 0.5) {
+    const words = cleanContent.split(" ");
+    excerpt = "";
+    for (const word of words) {
+      const testExcerpt = excerpt + word + " ";
+      if (testExcerpt.length > maxLength - 3) {
+        break;
+      }
+      excerpt = testExcerpt;
+    }
+    excerpt = excerpt.trim() + "...";
+  }
+
+  return {
+    content: excerpt,
+    length: excerpt.length,
+    truncated,
+  };
+}
+```
+
+### 3. SEO 优化规范
+
+```typescript
+// ✅ 正确：SEO友好的摘要
+interface SEOExcerpt {
+  excerpt: string;
+  keywords: string[];
+  readableScore: number;
+}
+
+function generateSEOExcerpt(
+  content: string,
+  keywords: string[] = []
+): SEOExcerpt {
+  const excerpt = generateExcerpt(content, 155).content; // Google推荐长度
+
+  // 关键词密度检查
+  const keywordDensity =
+    keywords.filter((keyword) =>
+      excerpt.toLowerCase().includes(keyword.toLowerCase())
+    ).length / keywords.length;
+
+  // 可读性评分（简化版）
+  const sentences = excerpt.split(/[.!?。！？]/).filter((s) => s.trim());
+  const avgSentenceLength = excerpt.length / sentences.length;
+  const readableScore = Math.max(0, 100 - avgSentenceLength * 2);
+
+  return {
+    excerpt,
+    keywords: keywords.filter((k) =>
+      excerpt.toLowerCase().includes(k.toLowerCase())
+    ),
+    readableScore,
+  };
+}
+```
+
+## 显示组件规范
+
+### 1. 摘要显示组件
+
+```typescript
+interface ExcerptProps {
+  content: string;
+  maxLength?: number;
+  showReadMore?: boolean;
+  className?: string;
+}
+
+const PostExcerpt: React.FC<ExcerptProps> = ({
+  content,
+  maxLength = 160,
+  showReadMore = true,
+  className,
+}) => {
+  const excerpt = generateExcerpt(content, maxLength);
+
+  return (
+    <div className={cn("text-gray-600 leading-relaxed", className)}>
+      <p>{excerpt.content}</p>
+      {excerpt.truncated && showReadMore && (
+        <Link
+          href="#"
+          className="text-primary-500 hover:text-primary-600 font-medium text-sm mt-2 inline-block"
+        >
+          阅读更多 →
+        </Link>
+      )}
+    </div>
+  );
+};
+```
+
+### 2. 卡片摘要组件
+
+```typescript
+interface PostCardProps {
+  title: string;
+  excerpt: string;
+  publishedAt: string;
+  tags?: string[];
+  author?: {
+    name: string;
+    avatar: string;
+  };
+}
+
+const PostCard: React.FC<PostCardProps> = ({
+  title,
+  excerpt,
+  publishedAt,
+  tags,
+  author,
+}) => {
+  return (
+    <article className="card-medical group hover:shadow-lg transition-all duration-300">
+      <h3 className="text-xl font-semibold text-gray-900 mb-3 group-hover:text-primary-600">
+        {title}
+      </h3>
+
+      <PostExcerpt content={excerpt} maxLength={140} className="mb-4" />
+
+      <div className="flex items-center justify-between text-sm text-gray-500">
+        <time dateTime={publishedAt}>
+          {new Date(publishedAt).toLocaleDateString("zh-CN")}
+        </time>
+
+        {tags && (
+          <div className="flex gap-2">
+            {tags.slice(0, 2).map((tag) => (
+              <span
+                key={tag}
+                className="px-2 py-1 bg-primary-50 text-primary-600 rounded text-xs"
+              >
+                {tag}
+              </span>
+            ))}
+          </div>
+        )}
+      </div>
+    </article>
+  );
+};
+```
+
+## 元数据集成
+
+### 1. Next.js 元数据
+
+```typescript
+// 页面级元数据使用摘要
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const post = await getPost(params.slug);
+  const seoExcerpt = generateSEOExcerpt(post.content, post.keywords);
+
+  return {
+    title: post.title,
+    description: seoExcerpt.excerpt,
+    keywords: seoExcerpt.keywords.join(", "),
+    openGraph: {
+      title: post.title,
+      description: seoExcerpt.excerpt,
+      type: "article",
+      publishedTime: post.publishedAt,
+      authors: [post.author.name],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: post.title,
+      description: seoExcerpt.excerpt,
+    },
+  };
+}
+```
+
+### 2. 结构化数据
+
+```typescript
+// 文章结构化数据中的摘要
+function generateArticleSchema(post: Post) {
+  const excerpt = generateExcerpt(post.content, 155);
+
+  return {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: post.title,
+    description: excerpt.content,
+    author: {
+      "@type": "Person",
+      name: post.author.name,
+    },
+    datePublished: post.publishedAt,
+    dateModified: post.updatedAt,
+    wordCount: post.content.split(/\s+/).length,
+    articleBody: post.content,
+  };
+}
+```
+
+## 性能优化
+
+### 1. 摘要缓存
+
+```typescript
+// 使用缓存避免重复计算
+const excerptCache = new Map<string, PostExcerpt>();
+
+function getCachedExcerpt(content: string, maxLength: number): PostExcerpt {
+  const cacheKey = `${content.slice(0, 100)}-${maxLength}`;
+
+  if (excerptCache.has(cacheKey)) {
+    return excerptCache.get(cacheKey)!;
+  }
+
+  const excerpt = generateExcerpt(content, maxLength);
+  excerptCache.set(cacheKey, excerpt);
+
+  return excerpt;
+}
+```
+
+### 2. 懒加载长摘要
+
+```typescript
+const LazyExcerpt: React.FC<{ content: string }> = ({ content }) => {
+  const [showFull, setShowFull] = useState(false);
+  const shortExcerpt = generateExcerpt(content, 100);
+
+  return (
+    <div>
+      <p>{shortExcerpt.content}</p>
+      {shortExcerpt.truncated && (
+        <button
+          onClick={() => setShowFull(!showFull)}
+          className="text-primary-500 hover:text-primary-600 text-sm mt-2"
+        >
+          {showFull ? "收起" : "展开"}
+        </button>
+      )}
+      {showFull && (
+        <motion.div
+          initial={{ opacity: 0, height: 0 }}
+          animate={{ opacity: 1, height: "auto" }}
+          className="mt-2"
+        >
+          <p>{content}</p>
+        </motion.div>
+      )}
+    </div>
+  );
+};
+```
+
+遵循这些摘要规范可以确保内容的可读性、SEO 效果和用户体验。

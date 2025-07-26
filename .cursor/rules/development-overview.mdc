@@ -1,0 +1,221 @@
+# Next.js 脑健康 AI 项目开发总览
+
+## 📁 项目技术栈
+
+- **框架**: Next.js 15 (App Router)
+- **语言**: TypeScript 5+
+- **样式**: Tailwind CSS 3.4
+- **动画**: Framer Motion 11
+- **图标**: Lucide React
+- **工具**: clsx + tailwind-merge
+
+## 🏗️ 核心架构原则
+
+### 设计原则
+
+1. **第一性原理** - 从问题本质出发
+2. **DRY 原则** - 避免重复代码
+3. **KISS 原则** - 保持简洁
+4. **SOLID 原则** - 面向对象设计
+5. **YAGNI 原则** - 避免过度设计
+
+### 文件大小限制
+
+- 函数: < 50 行
+- 组件: < 200 行
+- 文件: < 500 行（超过需拆分）
+
+## 📂 目录结构速览
+
+```
+src/
+├── app/                    # Next.js 页面
+│   ├── globals.css         # 全局样式
+│   ├── layout.tsx          # 根布局
+│   ├── page.tsx            # 首页
+│   └── [feature]/          # 功能页面
+├── components/
+│   ├── layout/             # 布局组件
+│   └── ui/                 # 基础UI组件
+└── lib/                    # 工具函数
+    └── utils.ts
+```
+
+## 🎨 样式规范速览
+
+### Tailwind 类名约定
+
+```typescript
+// 基础样式
+"font-medium rounded-lg transition-all duration-300";
+
+// 响应式设计
+"grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3";
+
+// 组件样式类
+".card-medical"; // 医疗主题卡片
+".btn-primary"; // 主要按钮
+".text-gradient"; // 渐变文字
+```
+
+### 颜色系统
+
+- **主色调**: `primary-500` (#3b82f6)
+- **次要色**: `secondary-500` (#64748b)
+- **使用**: `bg-primary-500 text-white hover:bg-primary-600`
+
+## ⚛️ 组件开发速览
+
+### 组件类型
+
+```typescript
+// 1. 服务器组件（默认）- 用于SEO和数据获取
+export default function Page() {
+  return <div>静态内容</div>;
+}
+
+// 2. 客户端组件 - 用于交互
+("use client");
+const Interactive = () => {
+  const [state, setState] = useState();
+  return <div onClick={() => setState(!state)}>交互内容</div>;
+};
+```
+
+### Props 接口规范
+
+```typescript
+interface ComponentProps extends React.HTMLAttributes<HTMLDivElement> {
+  variant?: "primary" | "secondary";
+  size?: "sm" | "md" | "lg";
+  children: React.ReactNode;
+}
+```
+
+## 🚀 性能优化要点
+
+### Next.js 优化
+
+```typescript
+// 1. 图片优化
+<Image src="/logo.png" alt="Logo" width={100} height={100} priority />;
+
+// 2. 动态导入
+const Heavy = dynamic(() => import("./Heavy"), {
+  loading: () => <div>Loading...</div>,
+});
+
+// 3. 缓存策略
+fetch("/api/data", { next: { revalidate: 3600 } }); // 1小时缓存
+```
+
+### React 优化
+
+```typescript
+// 1. 组件记忆化
+const Component = React.memo(({ data }) => <div>{data}</div>);
+
+// 2. 回调优化
+const handleClick = useCallback(() => {}, [dependency]);
+```
+
+## 🔧 开发工具配置
+
+### 导入顺序
+
+```typescript
+// 1. React相关
+import React, { useState } from "react";
+// 2. Next.js相关
+import Link from "next/link";
+// 3. 第三方库
+import { motion } from "framer-motion";
+// 4. 内部组件
+import Button from "@/components/ui/Button";
+```
+
+### 环境变量
+
+```typescript
+// 客户端变量（NEXT_PUBLIC_前缀）
+const publicKey = process.env.NEXT_PUBLIC_API_KEY;
+// 服务器变量
+const secretKey = process.env.SECRET_KEY;
+```
+
+## 📋 代码质量检查清单
+
+- [ ] 遵循命名规范（camelCase/PascalCase）
+- [ ] 添加适当的 TypeScript 类型
+- [ ] 处理错误和边界情况
+- [ ] 使用语义化的 HTML 和 ARIA 属性
+- [ ] 响应式设计适配
+- [ ] 性能优化（memo、callback）
+- [ ] 符合可访问性标准
+
+## 🎯 常用模式
+
+### 1. 条件样式
+
+```typescript
+import { cn } from "@/lib/utils";
+
+<div
+  className={cn(
+    "base-classes",
+    isActive && "active-classes",
+    variant === "primary" && "primary-classes",
+    className
+  )}
+/>;
+```
+
+### 2. 事件处理
+
+```typescript
+const handleSubmit = useCallback(
+  (event: React.FormEvent) => {
+    event.preventDefault();
+    // 处理逻辑
+  },
+  [dependency]
+);
+```
+
+### 3. 动画集成
+
+```typescript
+<motion.div
+  initial={{ opacity: 0, y: 20 }}
+  animate={{ opacity: 1, y: 0 }}
+  transition={{ duration: 0.3 }}
+>
+  内容
+</motion.div>
+```
+
+## 🔍 调试和错误处理
+
+### 错误边界
+
+```typescript
+// 使用error.tsx处理页面级错误
+// 组件内使用try-catch处理异步操作
+try {
+  const data = await fetchData();
+  return <Component data={data} />;
+} catch (error) {
+  console.error("Error:", error);
+  return <ErrorFallback />;
+}
+```
+
+### 开发调试
+
+```typescript
+if (process.env.NODE_ENV === "development") {
+  console.log("Debug info:", data);
+}
+```
+
+这个总览提供了项目开发的核心要点，具体详细规范请参考对应的专项规范文件。

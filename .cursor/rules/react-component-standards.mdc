@@ -1,0 +1,316 @@
+# React 组件开发规范
+
+## 组件架构原则
+
+参考项目中的组件示例：[Button.tsx](mdc:src/components/ui/Button.tsx)、[Header.tsx](mdc:src/components/layout/Header.tsx)
+
+### 1. 单一职责原则
+
+```typescript
+// ✅ 正确：每个组件只负责一个功能
+const Button: React.FC<ButtonProps> = ({
+  variant,
+  size,
+  loading,
+  children,
+  ...props
+}) => {
+  // 只处理按钮相关逻辑
+  return <motion.button {...props}>{children}</motion.button>;
+};
+
+// ❌ 避免：组件功能过于复杂
+const ComplexComponent = () => {
+  // 混合了多种不相关的逻辑
+};
+```
+
+### 2. 组合优于继承
+
+```typescript
+// ✅ 正确：使用组合模式
+const Card: React.FC<{ children: React.ReactNode }> = ({ children }) => (
+  <div className="card-medical">{children}</div>
+);
+
+const CardHeader: React.FC<{ title: string }> = ({ title }) => (
+  <h3 className="text-lg font-semibold">{title}</h3>
+);
+
+// 使用
+<Card>
+  <CardHeader title="标题" />
+  <p>内容</p>
+</Card>;
+```
+
+## 组件分类和命名
+
+### 1. 布局组件 (Layout Components)
+
+- 位置：`src/components/layout/`
+- 命名：描述性名称，如 `Header.tsx`、`Footer.tsx`、`SectionLayout.tsx`
+- 职责：页面结构和布局
+
+### 2. UI 组件 (UI Components)
+
+- 位置：`src/components/ui/`
+- 命名：通用名称，如 `Button.tsx`、`Card.tsx`
+- 职责：可复用的基础 UI 元素
+
+### 3. 页面组件 (Page Components)
+
+- 位置：`src/app/*/page.tsx`
+- 职责：特定页面的业务逻辑
+
+## 状态管理规范
+
+### 1. 客户端状态
+
+```typescript
+// ✅ 正确：合理使用useState
+const Header: React.FC = () => {
+  const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
+
+  const handleToggle = useCallback(() => {
+    setIsMenuOpen((prev) => !prev);
+  }, []);
+
+  return (
+    <header>
+      <button onClick={handleToggle}>
+        {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
+      </button>
+    </header>
+  );
+};
+```
+
+### 2. 状态提升
+
+```typescript
+// ✅ 正确：将共享状态提升到公共父组件
+const Layout: React.FC = () => {
+  const [user, setUser] = useState<User | null>(null);
+
+  return (
+    <>
+      <Header user={user} />
+      <Main user={user} />
+    </>
+  );
+};
+```
+
+## 事件处理规范
+
+### 1. 事件处理函数命名
+
+```typescript
+// ✅ 正确：handle前缀 + 动作 + 目标
+const handleMenuToggle = () => setIsMenuOpen(!isMenuOpen);
+const handleSubmitForm = (data: FormData) => {
+  /* ... */
+};
+const handleClickOutside = (event: MouseEvent) => {
+  /* ... */
+};
+
+// ❌ 避免：模糊的命名
+const click = () => {
+  /* ... */
+};
+const toggle = () => {
+  /* ... */
+};
+```
+
+### 2. 事件参数处理
+
+```typescript
+// ✅ 正确：明确的事件类型
+const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  setValue(event.target.value);
+};
+
+const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+  if (event.key === "Enter") {
+    handleSubmit();
+  }
+};
+```
+
+## 样式和 CSS 规范
+
+### 1. 使用 Tailwind CSS 类
+
+```typescript
+// ✅ 正确：使用语义化的Tailwind类
+const Button: React.FC<ButtonProps> = ({ variant, className, ...props }) => {
+  const baseClasses =
+    "font-medium rounded-lg transition-all duration-300 inline-flex items-center justify-center gap-2";
+
+  const variants = {
+    primary:
+      "bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:shadow-lg",
+    secondary: "bg-blue-500 text-white hover:bg-blue-600",
+    outline:
+      "border-2 border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white",
+  };
+
+  return (
+    <button
+      className={`${baseClasses} ${variants[variant]} ${className}`}
+      {...props}
+    >
+      {children}
+    </button>
+  );
+};
+```
+
+### 2. 条件样式处理
+
+```typescript
+// ✅ 正确：使用clsx或cn工具函数
+import { cn } from "@/lib/utils";
+
+const Card: React.FC<{ active?: boolean; className?: string }> = ({
+  active,
+  className,
+  children,
+}) => (
+  <div
+    className={cn("card-medical", active && "ring-2 ring-blue-500", className)}
+  >
+    {children}
+  </div>
+);
+```
+
+## 动画和交互
+
+### 1. Framer Motion 集成
+
+```typescript
+// ✅ 正确：合理使用motion组件
+import { motion, AnimatePresence } from "framer-motion";
+
+const AnimatedButton: React.FC<ButtonProps> = ({
+  disabled,
+  loading,
+  ...props
+}) => (
+  <motion.button
+    whileHover={{ scale: disabled || loading ? 1 : 1.02 }}
+    whileTap={{ scale: disabled || loading ? 1 : 0.98 }}
+    {...props}
+  />
+);
+
+// 列表动画
+const NavMenu: React.FC = () => (
+  <AnimatePresence>
+    {isOpen && (
+      <motion.nav
+        initial={{ opacity: 0, height: 0 }}
+        animate={{ opacity: 1, height: "auto" }}
+        exit={{ opacity: 0, height: 0 }}
+      >
+        {/* 导航项 */}
+      </motion.nav>
+    )}
+  </AnimatePresence>
+);
+```
+
+## 性能优化
+
+### 1. 组件懒加载
+
+```typescript
+// ✅ 正确：使用React.lazy
+const LazyComponent = React.lazy(() => import("./HeavyComponent"));
+
+const App: React.FC = () => (
+  <Suspense fallback={<div>加载中...</div>}>
+    <LazyComponent />
+  </Suspense>
+);
+```
+
+### 2. 避免重复渲染
+
+```typescript
+// ✅ 正确：使用React.memo
+const ExpensiveComponent = React.memo<Props>(({ data }) => {
+  return (
+    <div>
+      {data.map((item) => (
+        <Item key={item.id} item={item} />
+      ))}
+    </div>
+  );
+});
+
+// ✅ 正确：使用useCallback
+const Parent: React.FC = () => {
+  const [count, setCount] = useState(0);
+
+  const handleIncrement = useCallback(() => {
+    setCount((prev) => prev + 1);
+  }, []);
+
+  return <Child onIncrement={handleIncrement} />;
+};
+```
+
+## 错误边界和错误处理
+
+```typescript
+// ✅ 正确：错误边界组件
+class ErrorBoundary extends React.Component<
+  { children: React.ReactNode },
+  { hasError: boolean }
+> {
+  constructor(props: { children: React.ReactNode }) {
+    super(props);
+    this.state = { hasError: false };
+  }
+
+  static getDerivedStateFromError(error: Error): { hasError: boolean } {
+    return { hasError: true };
+  }
+
+  componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
+    console.error("组件错误:", error, errorInfo);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return <div>Something went wrong.</div>;
+    }
+
+    return this.props.children;
+  }
+}
+```
+
+## 可访问性 (Accessibility)
+
+```typescript
+// ✅ 正确：添加适当的ARIA属性
+const Button: React.FC<ButtonProps> = ({
+  loading,
+  disabled,
+  children,
+  ...props
+}) => (
+  <button aria-busy={loading} aria-disabled={disabled || loading} {...props}>
+    {loading && <Loader2 className="w-4 h-4 animate-spin" aria-hidden="true" />}
+    {children}
+  </button>
+);
+```
+
+遵循这些 React 组件开发规范可以确保代码的一致性、可维护性和用户体验质量。

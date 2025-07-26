@@ -1,0 +1,462 @@
+# Next.js 开发规范
+
+## App Router 架构
+
+参考项目配置：[next.config.ts](mdc:next.config.ts) 和 [layout.tsx](mdc:src/app/layout.tsx)
+
+### 1. 目录结构规范
+
+```
+src/app/
+├── layout.tsx          # 根布局（必需）
+├── page.tsx            # 首页
+├── globals.css         # 全局样式
+├── favicon.ico         # 网站图标
+└── [feature]/          # 功能路由
+    ├── page.tsx        # 功能页面
+    ├── layout.tsx      # 功能布局（可选）
+    └── loading.tsx     # 加载状态（可选）
+```
+
+### 2. 路由约定
+
+```typescript
+// ✅ 正确：静态路由
+// app/team/page.tsx
+export default function TeamPage() {
+  return <div>团队介绍</div>;
+}
+
+// ✅ 正确：动态路由
+// app/users/[id]/page.tsx
+export default function UserPage({ params }: { params: { id: string } }) {
+  return <div>用户 {params.id}</div>;
+}
+
+// ✅ 正确：嵌套路由组
+// app/(dashboard)/analytics/page.tsx
+export default function AnalyticsPage() {
+  return <div>分析页面</div>;
+}
+```
+
+## 组件类型规范
+
+### 1. 服务器组件（默认）
+
+```typescript
+// ✅ 推荐：服务器组件用于数据获取和SEO
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "CalculusBrain - 脑健康AI全栈解决方案",
+  description: "专注于脑健康AI的开源学习型组织",
+  keywords: "脑健康AI,人工智能,大模型,知识图谱",
+  openGraph: {
+    type: "website",
+    locale: "zh_CN",
+    url: "https://calculusbrain.ai",
+    title: "CalculusBrain",
+    description: "脑健康AI全栈解决方案",
+    images: [{ url: "/logo.webp", width: 1200, height: 630 }],
+  },
+};
+
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return (
+    <html lang="zh-CN" className="scroll-smooth">
+      <body className="antialiased">{children}</body>
+    </html>
+  );
+}
+```
+
+### 2. 客户端组件
+
+```typescript
+// ✅ 正确：需要交互性时使用客户端组件
+"use client";
+
+import React, { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+
+const InteractiveHeader: React.FC = () => {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  return (
+    <header>
+      <AnimatePresence>
+        {isMenuOpen && (
+          <motion.nav
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          >
+            {/* 导航内容 */}
+          </motion.nav>
+        )}
+      </AnimatePresence>
+    </header>
+  );
+};
+
+export default InteractiveHeader;
+```
+
+## 数据获取规范
+
+### 1. 静态数据生成
+
+```typescript
+// ✅ 正确：静态生成页面
+interface Post {
+  id: string;
+  title: string;
+  content: string;
+}
+
+async function getPosts(): Promise<Post[]> {
+  const res = await fetch("https://api.example.com/posts", {
+    next: { revalidate: 3600 }, // 1小时重新验证
+  });
+  return res.json();
+}
+
+export default async function BlogPage() {
+  const posts = await getPosts();
+
+  return (
+    <div>
+      {posts.map((post) => (
+        <article key={post.id}>
+          <h2>{post.title}</h2>
+          <p>{post.content}</p>
+        </article>
+      ))}
+    </div>
+  );
+}
+```
+
+### 2. 动态数据获取
+
+```typescript
+// ✅ 正确：动态路由参数
+interface PageProps {
+  params: { id: string };
+  searchParams: { [key: string]: string | string[] | undefined };
+}
+
+async function getPost(id: string) {
+  const res = await fetch(`https://api.example.com/posts/${id}`, {
+    cache: "no-store", // 禁用缓存，每次请求都获取最新数据
+  });
+
+  if (!res.ok) {
+    throw new Error("Failed to fetch post");
+  }
+
+  return res.json();
+}
+
+export default async function PostPage({ params }: PageProps) {
+  const post = await getPost(params.id);
+
+  return (
+    <article>
+      <h1>{post.title}</h1>
+      <div>{post.content}</div>
+    </article>
+  );
+}
+```
+
+## 特殊文件规范
+
+### 1. 加载和错误状态
+
+```typescript
+// app/loading.tsx - 加载状态
+export default function Loading() {
+  return (
+    <div className="flex items-center justify-center min-h-screen">
+      <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary-500"></div>
+    </div>
+  );
+}
+
+// app/error.tsx - 错误状态
+("use client");
+
+interface ErrorProps {
+  error: Error & { digest?: string };
+  reset: () => void;
+}
+
+export default function Error({ error, reset }: ErrorProps) {
+  return (
+    <div className="flex flex-col items-center justify-center min-h-screen">
+      <h2 className="text-2xl font-bold mb-4">出错了！</h2>
+      <p className="text-gray-600 mb-4">{error.message}</p>
+      <button onClick={reset} className="btn-primary">
+        重试
+      </button>
+    </div>
+  );
+}
+
+// app/not-found.tsx - 404页面
+export default function NotFound() {
+  return (
+    <div className="flex flex-col items-center justify-center min-h-screen">
+      <h2 className="text-2xl font-bold mb-4">页面未找到</h2>
+      <p className="text-gray-600">请检查URL是否正确</p>
+    </div>
+  );
+}
+```
+
+### 2. 布局组件
+
+```typescript
+// app/dashboard/layout.tsx - 嵌套布局
+export default function DashboardLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return (
+    <div className="flex min-h-screen">
+      <aside className="w-64 bg-gray-900 text-white">{/* 侧边栏导航 */}</aside>
+      <main className="flex-1 p-8">{children}</main>
+    </div>
+  );
+}
+```
+
+## 图片和资源处理
+
+### 1. Next.js Image 组件
+
+```typescript
+// ✅ 正确：使用Next.js Image组件
+import Image from "next/image";
+
+const Logo: React.FC = () => (
+  <div className="w-10 h-10 relative">
+    <Image
+      src="/next-demo/logo.png"
+      alt="CalculusBrain Logo"
+      width={100}
+      height={100}
+      className="rounded-lg object-contain"
+      priority // 首屏重要图片使用priority
+    />
+  </div>
+);
+
+// ✅ 正确：响应式图片
+const HeroImage: React.FC = () => (
+  <Image
+    src="/hero-image.jpg"
+    alt="Hero"
+    fill
+    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+    className="object-cover"
+  />
+);
+```
+
+### 2. 静态资源管理
+
+```typescript
+// ✅ 正确：静态资源路径（基于basePath配置）
+const basePath = "/next-demo"; // 从next.config.ts
+
+// 在组件中使用
+<Image src={`${basePath}/logo.png`} alt="Logo" />;
+
+// 或者使用环境变量
+const logoSrc =
+  process.env.NODE_ENV === "production" ? "/next-demo/logo.png" : "/logo.png";
+```
+
+## SEO 和元数据
+
+### 1. 页面级元数据
+
+```typescript
+// ✅ 正确：动态元数据
+interface Props {
+  params: { id: string };
+}
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const post = await getPost(params.id);
+
+  return {
+    title: post.title,
+    description: post.excerpt,
+    openGraph: {
+      title: post.title,
+      description: post.excerpt,
+      images: [post.image],
+    },
+  };
+}
+
+export default async function PostPage({ params }: Props) {
+  // 页面内容
+}
+```
+
+### 2. 结构化数据
+
+```typescript
+// ✅ 正确：添加JSON-LD结构化数据
+export default function ArticlePage() {
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: "文章标题",
+    author: {
+      "@type": "Person",
+      name: "作者姓名",
+    },
+    datePublished: "2024-01-01",
+  };
+
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <article>{/* 文章内容 */}</article>
+    </>
+  );
+}
+```
+
+## 性能优化
+
+### 1. 代码分割
+
+```typescript
+// ✅ 正确：动态导入
+import dynamic from "next/dynamic";
+
+const DynamicComponent = dynamic(() => import("@/components/HeavyComponent"), {
+  loading: () => <p>加载中...</p>,
+  ssr: false, // 禁用服务器端渲染（如果需要）
+});
+
+export default function Page() {
+  return (
+    <div>
+      <h1>页面标题</h1>
+      <DynamicComponent />
+    </div>
+  );
+}
+```
+
+### 2. 缓存策略
+
+```typescript
+// ✅ 正确：合理的缓存策略
+async function getData() {
+  const res = await fetch("https://api.example.com/data", {
+    next: {
+      revalidate: 3600, // 1小时重新验证
+      tags: ["posts"], // 缓存标签，用于按需重新验证
+    },
+  });
+
+  return res.json();
+}
+```
+
+## 环境配置
+
+### 1. 环境变量
+
+```typescript
+// ✅ 正确：使用环境变量
+const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000/api";
+
+// 服务器端环境变量（不会暴露给客户端）
+const secretKey = process.env.SECRET_KEY;
+
+// 客户端环境变量（NEXT_PUBLIC_ 前缀）
+const publicApiKey = process.env.NEXT_PUBLIC_API_KEY;
+```
+
+### 2. 配置管理
+
+```typescript
+// next.config.ts
+import type { NextConfig } from "next";
+
+const nextConfig: NextConfig = {
+  output: "export", // 静态导出
+  trailingSlash: true, // URL尾随斜杠
+  basePath: "/next-demo", // 基础路径
+  images: {
+    unoptimized: true, // 禁用图片优化（静态导出时）
+  },
+  async redirects() {
+    return [
+      {
+        source: "/old-path",
+        destination: "/new-path",
+        permanent: true,
+      },
+    ];
+  },
+};
+
+export default nextConfig;
+```
+
+## 开发和调试
+
+### 1. 开发工具配置
+
+```json
+// .vscode/settings.json
+{
+  "typescript.preferences.includePackageJsonAutoImports": "on",
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true
+  },
+  "files.associations": {
+    "*.css": "tailwindcss"
+  }
+}
+```
+
+### 2. 调试技巧
+
+```typescript
+// ✅ 正确：使用适当的日志记录
+export default async function Page() {
+  if (process.env.NODE_ENV === "development") {
+    console.log("开发模式下的调试信息");
+  }
+
+  try {
+    const data = await fetchData();
+    return <Component data={data} />;
+  } catch (error) {
+    console.error("数据获取失败:", error);
+    throw error; // 让error.tsx处理
+  }
+}
+```
+
+遵循这些 Next.js 规范可以确保应用的性能、SEO 效果和开发效率。

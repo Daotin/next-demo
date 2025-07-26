@@ -1,0 +1,86 @@
+# 项目结构规范
+
+## 目录结构说明
+
+本项目采用 Next.js 15 + TypeScript + Tailwind CSS 的现代化架构，遵循以下目录结构：
+
+```
+next-demo/
+├── src/
+│   ├── app/                    # Next.js App Router 页面
+│   │   ├── globals.css         # 全局样式
+│   │   ├── layout.tsx          # 根布局组件
+│   │   ├── page.tsx            # 首页
+│   │   └── [feature]/          # 功能模块页面
+│   │       └── page.tsx
+│   ├── components/             # 可复用组件
+│   │   ├── layout/             # 布局相关组件
+│   │   │   ├── Header.tsx
+│   │   │   ├── Footer.tsx
+│   │   │   └── SectionLayout.tsx
+│   │   └── ui/                 # 基础UI组件
+│   │       ├── Button.tsx
+│   │       ├── Card.tsx
+│   │       └── [component].tsx
+│   └── lib/                    # 工具函数和配置
+│       └── utils.ts
+├── public/                     # 静态资源
+│   ├── logo.png
+│   └── [assets]
+├── docs/                       # 项目文档
+├── next.config.ts              # Next.js 配置
+├── tailwind.config.ts          # Tailwind CSS 配置
+├── tsconfig.json               # TypeScript 配置
+└── package.json                # 依赖管理
+```
+
+## 目录命名规范
+
+1. **文件夹命名**：使用 kebab-case，如 `hero-demo`、`shape-landing-hero`
+2. **组件文件**：使用 PascalCase，如 `Button.tsx`、`Header.tsx`
+3. **工具文件**：使用 camelCase，如 `utils.ts`
+4. **页面文件**：固定使用 `page.tsx`
+5. **布局文件**：固定使用 `layout.tsx`
+
+## 模块组织原则
+
+1. **按功能分组**：相关组件放在同一目录下
+2. **分层架构**：
+
+   - `app/` - 页面级组件
+   - `components/layout/` - 布局组件
+   - `components/ui/` - 基础 UI 组件
+   - `lib/` - 工具函数和配置
+
+3. **单一职责**：每个组件只负责一个特定功能
+4. **可复用性**：UI 组件应该是无状态、可配置的
+
+## 文件导入顺序
+
+```typescript
+// 1. React相关
+import React from "react";
+import { useState, useEffect } from "react";
+
+// 2. Next.js相关
+import Link from "next/link";
+import Image from "next/image";
+
+// 3. 第三方库
+import { motion } from "framer-motion";
+import { Menu, X } from "lucide-react";
+
+// 4. 内部组件（使用@/别名）
+import Button from "@/components/ui/Button";
+import { cn } from "@/lib/utils";
+```
+
+## 组件文件结构
+
+每个组件文件应遵循以下结构：
+
+1. 指令声明（如 'use client'）
+2. 导入语句
+3. 类型定义
+4. 组件实现
+5. 默认导出

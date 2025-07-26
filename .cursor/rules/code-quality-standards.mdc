@@ -1,0 +1,374 @@
+# 代码质量和团队协作规范
+
+## 代码质量原则
+
+遵循用户设定的技术架构师原则：
+
+- **第一性原理**：分析问题的本质，从基础原理出发
+- **DRY 原则**：Don't Repeat Yourself，避免代码重复
+- **KISS 原则**：Keep It Simple, Stupid，保持代码简洁
+- **SOLID 原则**：面向对象设计的五个基本原则
+- **YAGNI 原则**：You Ain't Gonna Need It，不要过度设计
+
+### 1. 文件和函数大小限制
+
+```typescript
+// ✅ 正确：保持函数简洁（<50行）
+const Button: React.FC<ButtonProps> = ({
+  variant,
+  size,
+  children,
+  ...props
+}) => {
+  const classes = getButtonClasses(variant, size);
+  return (
+    <button className={classes} {...props}>
+      {children}
+    </button>
+  );
+};
+
+// ✅ 正确：将大型组件拆分
+// Header.tsx (100行) -> 拆分为多个子组件
+const Header: React.FC = () => (
+  <header>
+    <Logo />
+    <Navigation />
+    <UserMenu />
+  </header>
+);
+
+// ❌ 避免：超过500行的文件应该拆分
+// 如果组件/函数/文件超过500行，必须进行识别、分解和分离
+```
+
+### 2. 最小化改动原则
+
+```typescript
+// ✅ 正确：只修改指定的任务相关代码
+const updateUserProfile = (user: User, updates: Partial<User>) => {
+  return { ...user, ...updates }; // 只更新传入的字段
+};
+
+// ❌ 避免：修改无关代码，即使有格式问题
+// 除非明确要求，否则不要修改其他代码的语法或格式问题
+```
+
+## 命名规范
+
+### 1. 变量和函数命名
+
+```typescript
+// ✅ 正确：语义化命名
+const isUserLoggedIn = checkUserAuthStatus();
+const handleFormSubmission = (data: FormData) => {
+  /* ... */
+};
+const calculateTotalPrice = (items: CartItem[]) => {
+  /* ... */
+};
+
+// ❌ 避免：模糊或缩写命名
+const flag = checkStatus(); // 不清楚是什么flag
+const calcPrice = (items) => {
+  /* ... */
+}; // 避免缩写
+const fn = () => {
+  /* ... */
+}; // 完全没有意义
+```
+
+### 2. 组件和类型命名
+
+```typescript
+// ✅ 正确：PascalCase命名
+interface UserProfileProps {
+  user: User;
+  onEdit: (user: User) => void;
+}
+
+const UserProfile: React.FC<UserProfileProps> = ({ user, onEdit }) => {
+  return <div>{user.name}</div>;
+};
+
+// ✅ 正确：事件处理函数命名
+const handleUserEdit = (user: User) => {
+  /* ... */
+};
+const handleFormSubmit = (event: React.FormEvent) => {
+  /* ... */
+};
+const handleModalClose = () => {
+  /* ... */
+};
+```
+
+## 代码组织和模块化
+
+### 1. 单一职责原则
+
+```typescript
+// ✅ 正确：每个函数只做一件事
+const validateEmail = (email: string): boolean => {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+};
+
+const formatUserName = (firstName: string, lastName: string): string => {
+  return `${firstName} ${lastName}`.trim();
+};
+
+const processUserData = (userData: RawUserData): User => {
+  const isEmailValid = validateEmail(userData.email);
+  const fullName = formatUserName(userData.firstName, userData.lastName);
+
+  return {
+    id: userData.id,
+    email: isEmailValid ? userData.email : "",
+    name: fullName,
+  };
+};
+```
+
+### 2. 依赖注入和解耦
+
+```typescript
+// ✅ 正确：依赖注入，便于测试
+interface ApiService {
+  fetchUser(id: string): Promise<User>;
+}
+
+const UserComponent: React.FC<{ apiService: ApiService; userId: string }> = ({
+  apiService,
+  userId,
+}) => {
+  const [user, setUser] = useState<User | null>(null);
+
+  useEffect(() => {
+    apiService.fetchUser(userId).then(setUser);
+  }, [apiService, userId]);
+
+  return user ? <div>{user.name}</div> : <div>Loading...</div>;
+};
+```
+
+## 错误处理和边界情况
+
+### 1. 优雅的错误处理
+
+```typescript
+// ✅ 正确：完整的错误处理
+async function fetchUserData(userId: string): Promise<User | null> {
+  try {
+    const response = await fetch(`/api/users/${userId}`);
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const userData = await response.json();
+    return userData;
+  } catch (error) {
+    console.error("Failed to fetch user data:", error);
+    // 根据错误类型进行不同处理
+    if (error instanceof TypeError) {
+      // 网络错误
+      throw new Error("网络连接失败，请检查网络设置");
+    }
+    // 返回默认值而不是崩溃
+    return null;
+  }
+}
+```
+
+### 2. 边界情况处理
+
+```typescript
+// ✅ 正确：处理各种边界情况
+const calculateAverage = (numbers: number[]): number => {
+  // 空数组
+  if (numbers.length === 0) {
+    return 0;
+  }
+
+  // 过滤无效值
+  const validNumbers = numbers.filter(
+    (num) => typeof num === "number" && !isNaN(num) && isFinite(num)
+  );
+
+  if (validNumbers.length === 0) {
+    return 0;
+  }
+
+  const sum = validNumbers.reduce((acc, num) => acc + num, 0);
+  return sum / validNumbers.length;
+};
+```
+
+## 性能和可扩展性
+
+### 1. 向后兼容性设计
+
+```typescript
+// ✅ 正确：向后兼容的API设计
+interface UserApiV1 {
+  name: string;
+  email: string;
+}
+
+interface UserApiV2 extends UserApiV1 {
+  firstName: string;
+  lastName: string;
+  // 保持name字段以向后兼容
+}
+
+const migrateUserData = (oldUser: UserApiV1): UserApiV2 => {
+  const [firstName, lastName] = oldUser.name.split(" ");
+  return {
+    ...oldUser, // 保留原有字段
+    firstName: firstName || "",
+    lastName: lastName || "",
+  };
+};
+```
+
+### 2. 可扩展性设计
+
+```typescript
+// ✅ 正确：可扩展的组件设计
+interface BaseComponentProps {
+  className?: string;
+  children?: React.ReactNode;
+}
+
+interface ExtendableComponentProps extends BaseComponentProps {
+  variant?: string;
+  size?: string;
+  [key: string]: unknown; // 允许扩展属性
+}
+
+const ExtendableComponent: React.FC<ExtendableComponentProps> = ({
+  className,
+  children,
+  variant = "default",
+  size = "medium",
+  ...rest
+}) => {
+  return (
+    <div
+      className={cn(getVariantClass(variant), getSizeClass(size), className)}
+      {...rest}
+    >
+      {children}
+    </div>
+  );
+};
+```
+
+## 代码审查标准
+
+### 1. 代码审查清单
+
+- [ ] 代码是否遵循项目的编码规范？
+- [ ] 是否有适当的错误处理？
+- [ ] 是否考虑了边界情况？
+- [ ] 命名是否清晰和一致？
+- [ ] 是否有重复代码可以抽取？
+- [ ] 性能是否有问题？
+- [ ] 是否影响现有功能（向后兼容）？
+- [ ] 是否有足够的注释说明复杂逻辑？
+
+### 2. 注释和文档规范
+
+````typescript
+/**
+ * 计算用户的风险评分
+ * @param userProfile 用户基本信息
+ * @param healthData 健康数据
+ * @param options 计算选项
+ * @returns 0-100的风险评分，100表示最高风险
+ *
+ * @example
+ * ```typescript
+ * const score = calculateRiskScore(user, healthData, { algorithm: 'v2' });
+ * console.log(`用户风险评分: ${score}`);
+ * ```
+ */
+function calculateRiskScore(
+  userProfile: UserProfile,
+  healthData: HealthData,
+  options: CalculationOptions = {}
+): number {
+  // 复杂的计算逻辑需要注释说明
+  const ageWeight = userProfile.age * 0.3; // 年龄权重
+  const healthWeight = calculateHealthWeight(healthData); // 健康权重
+
+  return Math.min(100, ageWeight + healthWeight);
+}
+````
+
+## 团队协作
+
+### 1. Git 提交规范
+
+```bash
+# ✅ 正确的提交消息格式
+feat: 添加用户头像上传功能
+fix: 修复登录页面验证码显示问题
+docs: 更新API文档
+style: 调整按钮样式符合设计规范
+refactor: 重构用户数据处理逻辑
+test: 添加用户注册功能单元测试
+chore: 更新依赖包版本
+
+# ❌ 避免的提交消息
+update
+fix bug
+改了一些东西
+```
+
+### 2. 分支管理
+
+```bash
+# 分支命名规范
+feature/user-profile-edit    # 新功能
+fix/login-validation-bug     # Bug修复
+hotfix/critical-security     # 紧急修复
+refactor/api-optimization    # 重构
+docs/update-readme          # 文档更新
+```
+
+## 测试和质量保证
+
+### 1. 单元测试标准
+
+```typescript
+// ✅ 正确：完整的测试用例
+describe("calculateRiskScore", () => {
+  it("should return 0 for minimal risk profile", () => {
+    const userProfile = { age: 20, gender: "male" };
+    const healthData = { bloodPressure: 120, cholesterol: 150 };
+
+    const score = calculateRiskScore(userProfile, healthData);
+
+    expect(score).toBe(0);
+  });
+
+  it("should handle invalid input gracefully", () => {
+    const userProfile = { age: -1, gender: "unknown" };
+    const healthData = { bloodPressure: NaN, cholesterol: undefined };
+
+    expect(() => calculateRiskScore(userProfile, healthData)).not.toThrow();
+  });
+
+  it("should not exceed maximum score of 100", () => {
+    const userProfile = { age: 100, gender: "male" };
+    const healthData = { bloodPressure: 200, cholesterol: 400 };
+
+    const score = calculateRiskScore(userProfile, healthData);
+
+    expect(score).toBeLessThanOrEqual(100);
+  });
+});
+```
+
+遵循这些代码质量标准可以确保项目的可维护性、稳定性和团队协作效率。
